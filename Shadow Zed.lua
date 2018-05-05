@@ -61,3 +61,23 @@ function Zed:LoadMenu()
 	ZedMenu:MenuElement({id = "blank", type = SPACE , name = "by "..author.. ""})
 end
 
+function Zed:__init()
+	
+	self:LoadSpells()
+	self:LoadMenu()
+	Callback.Add("Tick", function() self:Tick() end)
+	Callback.Add("Draw", function() self:Draw() end)
+end
+
+function Zed:Tick()
+    if myHero.dead or Game.IsChatOpen() == true or IsRecalling() == true then return end
+
+    
+
+
+end
+
+function Zed:Draw()
+
+end
+
