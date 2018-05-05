@@ -2,9 +2,7 @@
 
 if myHero.charName ~= "Zed" then return end
 
-
-
-local version,author,lVersion = "v0.1","Saga","8.9"
+local version,author,lVersion = "v0.1","TheCallunxz","8.9"
 
 local shadow1_pos = "null"
 local shadow2_pos = "null"
