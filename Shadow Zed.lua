@@ -36,12 +36,10 @@ end
 
 function Zed:LoadMenu()
     ZedMenu = MenuElement({type = MENU, id = "Zed", name = "Shadow Zed | " ..version.. "", icon = MenuIcon})
-    
-	ZedMenu:MenuElement({id = "Combo", name = "Combo", type = MENU})
+    ZedMenu:MenuElement({id = "Combo", name = "Combo", type = MENU})
         ZedMenu.Combo:MenuElement({id = "useQ", name = "Q", value = true})
         ZedMenu.Combo:MenuElement({id = "useW", name = "W", value = true})
         ZedMenu.Combo:MenuElement({id = "useE", name = "E", value = true})
-
         ZedMenu.Combo:MenuElement({id = "useItems", name = "UseItems?", value = true})
         ZedMenu.Combo:MenuElement({id = "ignite", name = "Ignite?", value = true})
         ZedMenu.Combo:MenuElement({id = "comboActive", name = "Combo key", key = string.byte(" ")})
