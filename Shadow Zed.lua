@@ -88,5 +88,6 @@ function Zed:getShadowPos()
     for i = 0, Game.ParticleCount() do
         local obj = Game.Particle(i)
         PrintChat("particle: " ..obj.name.. "")
+    end
 end
 
