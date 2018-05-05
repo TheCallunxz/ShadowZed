@@ -25,7 +25,18 @@ else
     return end
 end
 
+
+
 class "Zed"
+
+function IsRecalling()
+	for K, Buff in pairs(GetBuffs(myHero)) do
+		if Buff.name == "recall" and Buff.duration > 0 then
+			return true
+		end
+	end
+	return false
+end
 
 function Zed:LoadSpells()
 	Q = {Range = 900, Width = 40, Delay = 0.40, Speed = 900, Collision = false, aoe = false, Type = "line"}
@@ -53,31 +64,29 @@ function Zed:LoadMenu()
     ZedMenu.Auto:MenuElement({id = "autoE", name = "Auto E", value = true})
     ZedMenu.Auto:MenuElement({id = "autoEEnergy", name = "Auto E Energy Needed", value = 50, min = 50, max = 200, step = 10})
 
-    ZedMenu:MenuElement({id = "Drawing", name = "Drawing", type = MENU})
-    ZedMenu.Drawing:MenuElement({id = "drawKillable", name = "Draw Killable R", value = false})
-
     ZedMenu:MenuElement({id = "blank", type = SPACE , name = ""})
 	ZedMenu:MenuElement({id = "blank", type = SPACE , name = "Script Ver: "..version.. " - LoL Ver: "..lVersion.. ""})
 	ZedMenu:MenuElement({id = "blank", type = SPACE , name = "by "..author.. ""})
 end
 
 function Zed:__init()
-	
 	self:LoadSpells()
 	self:LoadMenu()
 	Callback.Add("Tick", function() self:Tick() end)
-	Callback.Add("Draw", function() self:Draw() end)
 end
 
 function Zed:Tick()
+    self:getShadowPos()
     if myHero.dead or Game.IsChatOpen() == true or IsRecalling() == true then return end
-
-    
-
-
 end
 
 function Zed:Draw()
 
+end
+
+function Zed:getShadowPos()
+    for i = 0, Game.ParticleCount() do
+        local obj = Game.Particle(i)
+        PrintChat("particle: " ..obj.name.. "")
 end
 
