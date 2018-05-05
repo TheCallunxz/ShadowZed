@@ -80,10 +80,6 @@ function Zed:Tick()
     if myHero.dead or Game.IsChatOpen() == true or IsRecalling() == true then return end
 end
 
-function Zed:Draw()
-
-end
-
 function Zed:getShadowPos()
     for i = 0, Game.ParticleCount() do
         local obj = Game.Particle(i)
