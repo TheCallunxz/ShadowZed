@@ -4,6 +4,9 @@ if myHero.charName ~= "Zed" then return end
 
 local version,author,lVersion = "v0.1","TheCallunxz","8.9"
 
+local shadow1Prev = "null"
+local shadow2Prev = "null"
+
 local shadow1 = "null"
 local shadow2 = "null"
 
@@ -35,9 +38,9 @@ class "ShadowZed"
 
 function ShadowZed:__init()
     self:LoadSpells()
-    PrintChat("YEP")
 	self:LoadMenu()
-	Callback.Add("Tick", function() self:Tick() end)
+    Callback.Add("Tick", function() self:Tick() end)
+    Callback.Add("Draw", function() self:Draw() end)
 end
 
 function HasBuff(unit, buffName)
@@ -78,17 +81,14 @@ function ShadowZed:LoadMenu()
 	ZedMenu.Combo:MenuElement({id = "useQ", name = "Q", value = true})
 	ZedMenu.Combo:MenuElement({id = "useW", name = "W", value = true})
     ZedMenu.Combo:MenuElement({id = "useE", name = "E", value = true})
-    
-    ZedMenu.Combo:MenuElement({id = "useItems", name = "UseItems?", value = true})
     ZedMenu.Combo:MenuElement({id = "ignite", name = "Ignite?", value = true})
-    ZedMenu.Combo:MenuElement({id = "comboActive", name = "Combo key", key = string.byte(" ")})
 	
     ZedMenu:MenuElement({id = "Killsteal", name = "Killsteal", type = MENU})
     ZedMenu.Killsteal:MenuElement({id = "ksQ", name = "KS Q", value = true})
 
     ZedMenu:MenuElement({id = "Auto", name = "Auto", type = MENU})
     ZedMenu.Auto:MenuElement({id = "autoE", name = "Auto E", value = true})
-    ZedMenu.Auto:MenuElement({id = "autoEEnergy", name = "Auto E Energy Needed", value = 50, min = 50, max = 200, step = 10})
+    ZedMenu.Auto:MenuElement({id = "autoEEnergy", name = "Auto E - Min Energy% Needed", value = 50, min = 0, max = 100, step = 5})
 
     ZedMenu:MenuElement({id = "blank", type = SPACE , name = ""})
 	ZedMenu:MenuElement({id = "blank", type = SPACE , name = "Script Ver: "..version.. " - LoL Ver: "..lVersion.. ""})
@@ -99,6 +99,17 @@ function ShadowZed:Tick()
     self:getShadowPos1()
     self:getShadowPos2()
     if myHero.dead or Game.IsChatOpen() == true or IsRecalling() == true then return end
+
+end
+
+function ShadowZed:Draw()
+    if(shadow1 ~= "null") then
+        Draw.Circle(shadow1, 150, 10, Draw.Color(200, 255, 87, 51))
+    end
+
+    if(shadow2 ~= "null") then
+        Draw.Circle(shadow2, 150, 10, Draw.Color(200, 255, 87, 51))
+    end
 end
 
 function ShadowZed:getShadowPos1()
@@ -114,23 +125,29 @@ function ShadowZed:getShadowPos1()
                 for i = 0, Game.ParticleCount(), 1 do
                     local obj = Game.Particle(i)
                     if (obj.name == "Zed_Base_W_cloneswap_buf") then
-                        shadow1 = obj.pos
-                        shadow1Timer = Game.Timer() + 5.5
-                        break
+                        if(obj.pos ~= shadow2) and (obj.pos ~= shadow1) and (obj.pos ~= myHero.pos) then
+                            shadow1 = obj.pos
+                            shadow1Swapped = false
+                            shadow1Timer = Game.Timer() + 5.5
+                            break
+                        end
                     end
                 end
             end
         end
     end
 
-    if(Game.CanUseSpell(_W) ~= 0) and (shadow1 == "null") then
+    if(Game.CanUseSpell(_W) == 32) and not HasBuff(myHero, "ZedWHandler") and (shadow1 == "null") then
         if(shadow1Timer < Game.Timer()) then
             for i = 0, Game.ParticleCount(), 1 do
                 local obj = Game.Particle(i)
                 if (obj.name == "Zed_Base_CloneSwap") then
-                    shadow1 = obj.pos
-                    shadow1Timer = Game.Timer() + 5.5
-                    break
+                    if(obj.pos ~= shadow2) and (obj.pos ~= shadow1) and (obj.pos ~= myHero.pos) then
+                        shadow1 = obj.pos
+                        shadow1Timer = Game.Timer() + 5.5
+                        shadow1Swapped = true
+                        break
+                    end
                 end
             end
         end
@@ -140,11 +157,17 @@ function ShadowZed:getShadowPos1()
         for i = 0, Game.ParticleCount(), 1 do
             local obj = Game.Particle(i)
             if (obj.name == "Zed_Base_CloneSwap") then
-                shadow1 = obj.pos
-                break
+                if(obj.pos ~= shadow2) and (obj.pos ~= shadow1) and (obj.pos ~= myHero.pos) then
+                    shadow1 = obj.pos
+                    break
+                end
             end
         end
         shadow1Swapped = true
+    end
+
+    if(shadow1Swapped == true) and HasBuff(myHero, "ZedWHandler") then
+        shadow1Timer = 0
     end
 
 
@@ -163,9 +186,12 @@ function ShadowZed:getShadowPos2()
                 for i = 0, Game.ParticleCount(), 1 do
                     local obj = Game.Particle(i)
                     if (obj.name == "Zed_Base_R_cloneswap_buf") then
-                        shadow2 = obj.pos
-                        shadow2Timer = Game.Timer() + 7.7
-                        break
+                        if(obj.pos ~= shadow2) and (obj.pos ~= shadow1) and (obj.pos ~= myHero.pos) then
+                            shadow2 = obj.pos
+                            shadow2Swapped = false
+                            shadow2Timer = Game.Timer() + 7.7
+                            break
+                        end
                     end
                 end
             end
@@ -176,11 +202,17 @@ function ShadowZed:getShadowPos2()
         for i = 0, Game.ParticleCount(), 1 do
             local obj = Game.Particle(i)
             if (obj.name == "Zed_Base_CloneSwap") then
-                shadow2 = obj.pos
-                break
+                if(obj.pos ~= shadow2) and (obj.pos ~= shadow1) and (obj.pos ~= myHero.pos) then
+                    shadow2 = obj.pos
+                    break
+                end
             end
         end
         shadow2Swapped = true
+    end
+
+    if(shadow2Swapped == true) and HasBuff(myHero, "ZedR2") then
+        shadow2Timer = 0
     end
 
 end
