@@ -593,7 +593,7 @@ function ShadowZed:OnClear()
                 end
 
                 local Qdmg = ({80, 115, 150, 185, 220})[Qlvl] + (0.9 * myHero.bonusDamage)
-                local Edmg = ({70, 95, 120, 145, 170})[Elvl] + (0.8 * myHero.bonusDamage)
+                local Edmg = ({60, 85, 110, 135, 160})[Elvl] + (0.8 * myHero.bonusDamage)
 
                 if (Game.CanUseSpell(_E) == 0 and ZedMenu.Clear.useE:Value()) then
                     if  hp > 0 and hp <= _G.SDK.Damage:CalculateDamage(myHero, enemy, _G.SDK.DAMAGE_TYPE_PHYSICAL, Edmg) then
