@@ -2,7 +2,7 @@
 
 if myHero.charName ~= "Zed" then return end
 
-local version,author,lVersion = "v1.0","TheCallunxz","8.9"
+local version,author,lVersion = "v1.1","TheCallunxz","8.9"
 
 local shadow1Prev = "null"
 local shadow2Prev = "null"
@@ -55,7 +55,7 @@ end
 function ShadowZed:LoadSpells()
 	Q = {Range = 900, Width = 40, Delay = 0.2, Speed = 900, Collision = false, aoe = false, Type = "line"}
 	W = {Range = 850, Delay = 0.1, Speed = 1750, Radius = 290, Collision = false, aoe = false, Type = "line"}
-	E = {Delay = 0.01, Speed = 1750, Collision = false, aoe = false, Type = "circular", Radius = 290}
+	E = {Delay = 0, Speed = 1750, Collision = false, aoe = false, Type = "circular", Radius = 290}
 	R = {}
 end
 
