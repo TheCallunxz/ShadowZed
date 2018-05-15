@@ -208,7 +208,6 @@ end
 function ShadowZed:LoadBlockSpells() --Credits to DamnedNoob/Sikaka/ZeroTwo
 	for i = 1, LocalGameHeroCount(i) do
         local t = LocalGameHero(i)
-        if (t ~= nil) then self.SpellsLoaded = true end
 		if t and t.isEnemy then		
 			for slot = 0, 3 do
 				local enemy = t
@@ -224,7 +223,8 @@ function ShadowZed:LoadBlockSpells() --Credits to DamnedNoob/Sikaka/ZeroTwo
 				end
 				if slot == 3 then
 					ZedMenu.Dodge.DodgeList:MenuElement({ id = spellName, name = enemy.charName.."- R", value = true })
-				end			
+                end
+                self.SpellsLoaded = true			
 			end
 		end
 	end
@@ -325,8 +325,8 @@ function ShadowZed:KS_Q()
         for i = 1, #closeEnemies do
             local enemy = closeEnemies[i];
             local hp = _G.SDK.HealthPrediction:GetPrediction(enemy, Q.Delay)
-            local Qdmg = ({80, 115, 150, 185, 220})[myHero:GetSpellData(_Q).level] + 0.9 * myHero.bonusDamage
             if (Game.CanUseSpell(_Q) == 0) then
+                local Qdmg = ({80, 115, 150, 185, 220})[myHero:GetSpellData(_Q).level] + 0.9 * myHero.bonusDamage
                 if  hp > 0 and hp <= _G.SDK.Damage:CalculateDamage(myHero, enemy, _G.SDK.DAMAGE_TYPE_PHYSICAL, Qdmg) then
                     local hitChance, aimPos = HPred:GetHitchance(myHero.pos, enemy, Q.Range, Q.Delay, Q.Speed, Q.Width, true)
                         if (hitChance >= ZedMenu.Pred.hPred:Value()) then
@@ -582,26 +582,33 @@ function ShadowZed:OnClear()
             for i = 1, #EnemyMinions do
                 local enemy = EnemyMinions[i];
                 local hp = _G.SDK.HealthPrediction:GetPrediction(enemy, Q.Delay)
-                local Qdmg = ({80, 115, 150, 185, 220})[myHero:GetSpellData(_Q).level] + (0.9 * myHero.bonusDamage)
-                local Edmg = ({70, 95, 120, 145, 170})[myHero:GetSpellData(_E).level] + (0.8 * myHero.bonusDamage)
+                local Qlvl = 1
+                local Elvl = 1
+
+                if (Game.CanUseSpell(_Q) == 0) then
+                   Qlvl = myHero:GetSpellData(_Q).level
+                end
+                if (Game.CanUseSpell(_E) == 0) then
+                    Elvl = myHero:GetSpellData(_Q).level
+                end
+
+                local Qdmg = ({80, 115, 150, 185, 220})[Qlvl] + (0.9 * myHero.bonusDamage)
+                local Edmg = ({70, 95, 120, 145, 170})[Elvl] + (0.8 * myHero.bonusDamage)
 
                 if (Game.CanUseSpell(_E) == 0 and ZedMenu.Clear.useE:Value()) then
                     if  hp > 0 and hp <= _G.SDK.Damage:CalculateDamage(myHero, enemy, _G.SDK.DAMAGE_TYPE_PHYSICAL, Edmg) then
                         if(GetDistance(enemy.pos, myHero.pos) < E.Radius) then
-                            if IsWindingUp(myHero) == true then break end
                             Control.CastSpell(HK_E)
                             break
                         end
                         if(shadow1 ~= "null") then
                             if(GetDistance(enemy.pos, shadow1) < E.Radius) then
-                                if IsWindingUp(myHero) == true then break end
                                 Control.CastSpell(HK_E)
                                 break
                             end
                         end
                         if(shadow2 ~= "null") then
                             if(GetDistance(enemy.pos, shadow2) < E.Radius) then
-                                if IsWindingUp(myHero) == true then break end
                                 Control.CastSpell(HK_E)
                                 break
                             end
@@ -613,11 +620,9 @@ function ShadowZed:OnClear()
                     if  hp > 0 and hp <= _G.SDK.Damage:CalculateDamage(myHero, enemy, _G.SDK.DAMAGE_TYPE_PHYSICAL, Qdmg) then
                         local hitChance, aimPos = HPred:GetHitchance(myHero.pos, enemy, Q.Range, Q.Delay, Q.Speed, Q.Width, true)
                         if (hitChance >= ZedMenu.Pred.hPred:Value()) then
-                            if myHero.attackData.state == STATE_WINDUP or IsWindingUp(myHero) == true then break end
-                            if(GetDistance(enemy.pos, myHero.pos) > 100) then
-                                Control.CastSpell(HK_Q, aimPos)
-                                break
-                            end
+                            if (myHero.attackData.state == STATE_WINDUP or IsWindingUp(myHero) == true) then break end
+                            Control.CastSpell(HK_Q, aimPos)
+                            break
                         end
                     end
                     --Pierce
@@ -625,11 +630,9 @@ function ShadowZed:OnClear()
                     if  hp > 0 and hp <= _G.SDK.Damage:CalculateDamage(myHero, enemy, _G.SDK.DAMAGE_TYPE_PHYSICAL, newQdmg) then
                         local hitChance, aimPos = HPred:GetHitchance(myHero.pos, enemy, Q.Range, Q.Delay, Q.Speed, Q.Width, false)
                         if (hitChance >= ZedMenu.Pred.hPred:Value()) then
-                            if myHero.attackData.state == STATE_WINDUP or IsWindingUp(myHero) == true then break end
-                            if(GetDistance(enemy.pos, myHero.pos) > 100) then
-                                Control.CastSpell(HK_Q, aimPos)
-                                break
-                            end
+                            if (myHero.attackData.state == STATE_WINDUP or IsWindingUp(myHero) == true) then break end
+                            Control.CastSpell(HK_Q, aimPos)
+                            break
                         end
                     end
                 end
