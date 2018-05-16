@@ -2,7 +2,7 @@
 
 if myHero.charName ~= "Zed" then return end
 
-local version,author,lVersion = "v1.1","TheCallunxz","8.9"
+local version,author,lVersion = "v1.2","TheCallunxz","8.10"
 
 local shadow1Prev = "null"
 local shadow2Prev = "null"
@@ -17,6 +17,8 @@ local shadow1Swapped = false
 local shadow2Swapped = false
 
 local canQuickW2 = true
+
+local readyToW = true
 
 local LocalGameMinionCount = Game.MinionCount
 local LocalGameMinion = Game.Minion
@@ -423,8 +425,9 @@ function ShadowZed:ComboW()
                 if (hitChance >= ZedMenu.Pred.hPred:Value()) then
                     if (Game.CanUseSpell(_W) == 0) and not HasBuff(myHero, "ZedWHandler") and (myHero:GetSpellData(_W).name ~= "ZedW2") then
                         if ((Game.CanUseSpell(_Q) == 0) or (Game.CanUseSpell(_E) == 0) and GetManaPercent(myHero) > 50) then
-                            if(myHero:GetSpellData(_W).name == "ZedW") then
+                            if(myHero:GetSpellData(_W).name == "ZedW") and (readyToW == true) then
                                 Control.CastSpell(HK_W, newPos)
+                                readyToW = false
                                 if((Game.CanUseSpell(_E) == 0)) then
                                     Control.CastSpell(HK_E)
                                 end
@@ -447,6 +450,8 @@ function ShadowZed:ComboW()
                 end
             end
         end
+    else
+        readyToW = true
     end
 end
 
