@@ -460,7 +460,7 @@ function ShadowZed:ComboW()
                         if ((Game.CanUseSpell(_Q) == 0) or (Game.CanUseSpell(_E) == 0) and GetManaPercent(myHero) > 50) then
                             if(myHero:GetSpellData(_W).name == "ZedW") and (readyToW == true) then
                                 Control.CastSpell(HK_W, newPos)
-                                
+                                readyToW = false
                                 if((Game.CanUseSpell(_E) == 0)) then
                                     Control.CastSpell(HK_E)
                                 end
@@ -477,7 +477,7 @@ function ShadowZed:ComboW()
                 if (Game.CanUseSpell(_W) == 0) and not HasBuff(myHero, "ZedWHandler") and (myHero:GetSpellData(_W).name ~= "ZedW2") then
                     if ((Game.CanUseSpell(_Q) == 0) and GetManaPercent(myHero) > 50) and (readyToW == true) then
                         Control.CastSpell(HK_W, newPos)
-                        
+                        readyToW = false
                         Control.CastSpell(HK_Q, aimPos)
                         return
                     end
